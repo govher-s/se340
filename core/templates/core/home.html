@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Travel Blog</title>
+</head>
+
+<body>
+
+    <!-- ==================== HEADER ==================== -->
+
+    <header>
+
+        <h1>Travel Blog</h1>
+
+        <nav>
+
+            <a href="{% url 'home' %}">Home</a>
+
+            {% if user.is_authenticated %}
+
+                <span>
+                    Welcome, {{ user.username }}!
+                </span>
+
+                <a href="{% url 'create_post' %}">
+                    Create Post
+                </a>
+
+                <form
+                    method="post"
+                    action="{% url 'logout' %}"
+                    style="display: inline;"
+                >
+                    {% csrf_token %}
+
+                    <button type="submit">
+                        Logout
+                    </button>
+                </form>
+
+            {% else %}
+
+                <a href="{% url 'login' %}">
+                    Login
+                </a>
+
+                <a href="{% url 'register' %}">
+                    Create Account
+                </a>
+
+            {% endif %}
+
+        </nav>
+
+    </header>
+
+
+    <hr>
+
+
+    <!-- ==================== INTRO ==================== -->
+
+    <main>
+
+        <section>
+
+            <h2>Explore the World</h2>
+
+            <p>
+                Read travel stories, discover new destinations,
+                and share your own adventures.
+            </p>
+
+            {% if user.is_authenticated %}
+
+                <p>
+                    You are logged in and can create travel posts.
+                </p>
+
+            {% else %}
+
+                <p>
+                    Anyone can read travel posts.
+                    Log in or create an account to share your own adventures.
+                </p>
+
+            {% endif %}
+
+        </section>
+
+
+        <hr>
+
+
+        <!-- ==================== POSTS ==================== -->
+
+        <section>
+
+            <h2>Recent Posts</h2>
+
+        <form method="get">
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="hide_explicit"
+                    value="1"
+                    {% if hide_explicit %}checked{% endif %}
+                >
+                Hide Explicit Language
+            </label>
+
+            <br>
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="hide_long_reads"
+                    value="1"
+                    {% if hide_long_reads %}checked{% endif %}
+                >
+                Hide Long Reads
+            </label>
+
+            <br>
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="hide_external_links"
+                    value="1"
+                    {% if hide_external_links %}checked{% endif %}
+                >
+                Hide External Links
+            </label>
+
+            <br><br>
+
+            <button type="submit">
+                Apply Filters
+            </button>
+
+        </form>
+
+
+            {% for post in posts %}
+
+                <article>
+
+                    <!-- Post title -->
+
+                    <h3>
+                        {{ post.title }}
+                    </h3>
+
+
+                    <!-- Author and date -->
+
+                    <p>
+                        By {{ post.author.username }}
+                        |
+                        {{ post.created_at }}
+                    </p>
+
+
+                    <!-- Decorator Flags -->
+
+                    <div>
+
+                        {% if post.has_explicit_language %}
+
+                            <strong>
+                                [ Explicit Language ]
+                            </strong>
+
+                        {% endif %}
+
+
+                        {% if post.is_long_read %}
+
+                            <strong>
+                                [ Long Read ]
+                            </strong>
+
+                        {% endif %}
+
+
+                        {% if post.has_external_links %}
+
+                            <strong>
+                                [ External Links ]
+                            </strong>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- Post content -->
+
+                    <p>
+                        {{ post.content }}
+                    </p>
+
+                </article>
+
+
+                <hr>
+
+
+            {% empty %}
+
+                <p>
+                    No travel posts have been published yet.
+                </p>
+
+            {% endfor %}
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>

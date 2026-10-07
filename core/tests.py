@@ -1,4 +1,7 @@
 from django.test import TestCase
+from django.contrib.auth import get_user_model
+
+from .models import Post
 
 from .decorators.base import BasicPostAnalyzer
 from .decorators.links import ExternalLinkDecorator
@@ -61,3 +64,24 @@ class ExplicitLanguageDecoratorTest(TestCase):
         results = analyzer.analyze()
 
         self.assertFalse(results["has_explicit_language"])
+
+class PostModelTest(TestCase):
+
+    def setUp(self):
+        User = get_user_model()
+
+        self.user = User.objects.create_user(
+            username="testuser",
+            password="testpassword"
+        )
+
+    def test_post_flags_are_set_when_saved(self):
+        post = Post.objects.create(
+            title="Test Trip",
+            content="This trip was damn exhausting. Visit https://example.com",
+            author=self.user
+        )
+
+        self.assertTrue(post.has_explicit_language)
+        self.assertTrue(post.has_external_links)
+        self.assertFalse(post.is_long_read)

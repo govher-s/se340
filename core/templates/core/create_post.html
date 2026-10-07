@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Post</title>
+</head>
+
+<body>
+
+    <h1>Create a Travel Post</h1>
+
+    <p>
+        Logged in as: {{ user.username }}
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">Publish Post</button>
+    </form>
+
+    <p>
+        <a href="{% url 'home' %}">Cancel</a>
+    </p>
+
+</body>
+
+</html>
