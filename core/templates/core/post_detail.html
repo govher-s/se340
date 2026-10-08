@@ -1,0 +1,18 @@
+{% extends "core/base.html" %}
+
+{% block title %}{{ post.title }} | Nomad Postcards{% endblock %}
+
+{% block content %}
+<article class="detail-page container">
+    <a class="back-link" href="{% url 'core:post_list' %}">← Back to stories</a>
+    <p class="eyebrow">Travel story</p>
+    <h1>{{ post.title }}</h1>
+    <p class="detail-meta">By {{ post.author.username }} · {{ post.created_at|date:"j F Y" }}</p>
+    <div class="detail-content">{{ post.content|linebreaks }}</div>
+    <div class="badges detail-badges">
+        {% if post.has_explicit_langauge %}<span class="badge badge-red">profanity</span>{% endif %}
+        {% if post.is_long_read %}<span class="badge badge-green">Long</span>{% endif %}
+        {% if post.has_external_links %}<span class="badge badge-blue">external links</span>{% endif %}
+    </div>
+</article>
+{% endblock %}

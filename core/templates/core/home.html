@@ -1,0 +1,71 @@
+{% extends "core/base.html" %}
+
+{% block title %}Explore | Nomad Postcards{% endblock %}
+
+{% block content %}
+<section class="hero container-fluid">
+    <div class="hero-copy">
+        <p class="eyebrow">The nomad postcard club</p>
+        <h1>Start<br>exploring!</h1>
+        <p>Notes and photos<br>from all around<br>the world.</p>
+    </div>
+    <div class="hero-postcard" aria-hidden="true">
+        <div class="postcard-image"></div>
+        <div class="postcard-note">Your ultimate<br>guide to<br>traveling!</div>
+    </div>
+</section>
+
+<section class="container feed-section">
+    <form class="feed-tools" method="get" action="{% url 'core:home' %}">
+        <label class="visually-hidden" for="post-search">Search stories</label>
+        <input id="post-search" name="q" type="search" value="{{ search_query }}" placeholder="Search stories">
+        <details class="avoid-menu">
+            <summary>Avoid</summary>
+            <fieldset class="filter-options">
+                <legend>Warnings</legend>
+                <label><input type="checkbox" name="exclude" value="profanity"{% if "profanity" in excluded_labels %} checked{% endif %}> Profanity</label>
+                <label><input type="checkbox" name="exclude" value="external-links"{% if "external-links" in excluded_labels %} checked{% endif %}> External links</label>
+                <label><input type="checkbox" name="exclude" value="long"{% if "long" in excluded_labels %} checked{% endif %}> Long reads</label>
+            </fieldset>
+        </details>
+        <button type="submit">Apply</button>
+    </form>
+
+    <section class="story-group">
+        <div class="section-heading">
+            <h2>{% if search_query %}Search results{% else %}Following{% endif %}</h2>
+            <a href="{% url 'core:post_list' %}">View all</a>
+        </div>
+        <div class="post-grid">
+            {% for post in posts %}
+                {% include "core/post_card.html" with post=post %}
+            {% empty %}
+                <p class="empty-state">No stories yet. Add a post in the admin to begin exploring.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="story-group muted-group">
+        <div class="section-heading"><h2>Trending</h2></div>
+        <div class="post-grid post-grid-preview">
+            {% for post in posts|slice:":3" %}
+                {% include "core/post_card.html" with post=post %}
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="story-group muted-group">
+        <div class="section-heading"><h2>Newbies</h2></div>
+        <div class="post-grid post-grid-preview">
+            {% for post in posts|slice:":3" %}
+                {% include "core/post_card.html" with post=post %}
+            {% endfor %}
+        </div>
+    </section>
+</section>
+
+<section class="write-banner container">
+    <p>Do you want to write a <strong>blog?</strong></p>
+    <a href="{% url 'admin:core_post_add' %}">Write now <span aria-hidden="true">→</span></a>
+</section>
+{% endblock %}

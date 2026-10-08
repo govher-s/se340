@@ -1,0 +1,33 @@
+{% extends "core/base.html" %}
+
+{% block title %}Stories | Nomad Postcards{% endblock %}
+
+{% block content %}
+<section class="page-heading container">
+    <p class="eyebrow">From the community</p>
+    <h1>All stories</h1>
+</section>
+<section class="container feed-section">
+    <form class="feed-tools" method="get" action="{% url 'core:post_list' %}">
+        <label class="visually-hidden" for="post-search">Search stories</label>
+        <input id="post-search" name="q" type="search" value="{{ search_query }}" placeholder="Search stories">
+        <details class="avoid-menu">
+            <summary>Avoid</summary>
+            <fieldset class="filter-options">
+                <legend>Warnings</legend>
+                <label><input type="checkbox" name="exclude" value="profanity"{% if "profanity" in excluded_labels %} checked{% endif %}> Profanity</label>
+                <label><input type="checkbox" name="exclude" value="external-links"{% if "external-links" in excluded_labels %} checked{% endif %}> External links</label>
+                <label><input type="checkbox" name="exclude" value="long"{% if "long" in excluded_labels %} checked{% endif %}> Long reads</label>
+            </fieldset>
+        </details>
+        <button type="submit">Apply</button>
+    </form>
+    <div class="post-grid">
+        {% for post in posts %}
+            {% include "core/post_card.html" with post=post %}
+        {% empty %}
+            <p class="empty-state">No stories have been published yet.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

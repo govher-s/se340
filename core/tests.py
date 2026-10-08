@@ -1,9 +1,12 @@
 from django.test import TestCase
+from django.contrib.auth import get_user_model
+from django.urls import reverse
 
 from .decorators.base import BasicPostAnalyzer
 from .decorators.links import ExternalLinkDecorator
 from .decorators.length import LengthDecorator
 from .decorators.explicit import ExplicitLanguageDecorator
+from .models import Post
 
 # Create your tests here.
 class ExternalLinkDecoratorTest(TestCase):
@@ -61,3 +64,103 @@ class ExplicitLanguageDecoratorTest(TestCase):
         results = analyzer.analyze()
 
         self.assertFalse(results["has_explicit_language"])
+
+
+class PostPageTests(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        user = get_user_model().objects.create_user(
+            username="traveler",
+            password="test-password",
+        )
+        cls.post = Post.objects.create(
+            title="A Walk Through Venice",
+            content="A short travel story.",
+            author=user,
+        )
+
+    def test_home_page_renders(self):
+        response = self.client.get(reverse("core:home"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.post.title)
+
+    def test_post_list_renders(self):
+        response = self.client.get(reverse("core:post_list"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.post.title)
+
+    def test_post_detail_renders_at_slug_url(self):
+        response = self.client.get(self.post.get_absolute_url())
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.post.content)
+
+    def test_post_get_absolute_url_uses_slug(self):
+        self.assertEqual(
+            self.post.get_absolute_url(),
+            f"/posts/{self.post.slug}/",
+        )
+
+    def test_home_page_searches_title(self):
+        response = self.client.get(reverse("core:home"), {"q": "Venice"})
+
+        self.assertContains(response, self.post.title)
+        self.assertContains(response, 'value="Venice"')
+
+    def test_post_list_searches_content(self):
+        response = self.client.get(reverse("core:post_list"), {"q": "short travel"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.post.title)
+
+    def test_home_excludes_selected_analyzer_label(self):
+        self.post.is_long_read = True
+        self.post.save(update_fields=["is_long_read"])
+
+        response = self.client.get(reverse("core:home"), {"exclude": "profanity"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.post.title)
+        self.assertContains(response, 'value="profanity"')
+
+    def test_home_excludes_multiple_analyzer_labels(self):
+        self.post.has_external_links = True
+        self.post.save(update_fields=["has_external_links"])
+
+        response = self.client.get(
+            reverse("core:home"),
+            [("exclude", "profanity"), ("exclude", "external-links")],
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, self.post.title)
+
+    def test_home_excludes_long_reads(self):
+        self.post.is_long_read = True
+        self.post.save(update_fields=["is_long_read"])
+
+        response = self.client.get(reverse("core:home"), {"exclude": "long"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, self.post.title)
+
+    def test_hidden_posts_are_not_displayed_in_home(self):
+        self.post.is_hidden = True
+        self.post.save(update_fields=["is_hidden"])
+
+        response = self.client.get(reverse("core:home"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, self.post.title)
+
+    def test_hidden_posts_are_not_displayed_in_post_list(self):
+        self.post.is_hidden = True
+        self.post.save(update_fields=["is_hidden"])
+
+        response = self.client.get(reverse("core:post_list"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, self.post.title)
