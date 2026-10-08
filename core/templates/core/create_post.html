@@ -15,7 +15,7 @@
         Logged in as: {{ user.username }}
     </p>
 
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
         {{ form.as_p }}
@@ -24,7 +24,7 @@
     </form>
 
     <p>
-        <a href="{% url 'home' %}">Cancel</a>
+        <a href="{% url 'core:home' %}">Cancel</a>
     </p>
 
 </body>

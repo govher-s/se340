@@ -1,5 +1,9 @@
+from io import BytesIO
+
+from PIL import Image
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 
 from .decorators.base import BasicPostAnalyzer
@@ -67,6 +71,18 @@ class ExplicitLanguageDecoratorTest(TestCase):
 
 
 class PostPageTests(TestCase):
+
+    @staticmethod
+    def create_test_image():
+        image = Image.new("RGB", (2, 2), color="blue")
+        image_file = BytesIO()
+        image.save(image_file, format="JPEG")
+        image_file.seek(0)
+        return SimpleUploadedFile(
+            "upload-test.jpg",
+            image_file.read(),
+            content_type="image/jpeg",
+        )
 
     @classmethod
     def setUpTestData(cls):
@@ -164,3 +180,21 @@ class PostPageTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(response, self.post.title)
+
+    def test_authenticated_user_can_create_post_with_image(self):
+        self.client.force_login(self.post.author)
+        response = self.client.post(
+            reverse("core:create_post"),
+            {
+                "title": "Uploaded Story",
+                "content": "A story with https://example.com",
+                "image": self.create_test_image(),
+            },
+        )
+
+        self.assertRedirects(response, reverse("core:home"))
+        uploaded_post = Post.objects.get(title="Uploaded Story")
+        self.assertEqual(uploaded_post.author, self.post.author)
+        self.assertTrue(uploaded_post.image.name.startswith("post_images/upload-test"))
+        self.assertTrue(uploaded_post.image.name.endswith(".jpg"))
+        self.assertTrue(uploaded_post.has_external_links)
