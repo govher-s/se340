@@ -4,6 +4,11 @@ from django.urls import reverse
 from django.utils.text import slugify
 from django.utils import timezone
 
+from .decorators.base import BasicPostAnalyzer
+from .decorators.links import ExternalLinkDecorator
+from .decorators.length import LengthDecorator
+from .decorators.explicit import ExplicitLanguageDecorator
+
 # Create your models here.
 class Post(models.Model):
     title = models.CharField(max_length=200)
@@ -33,6 +38,18 @@ class Post(models.Model):
                 candidate = f"{base_slug}-{suffix}"
                 suffix += 1
             self.slug = candidate
+
+        update_fields = kwargs.get("update_fields")
+        should_analyze = self.pk is None or update_fields is None or "content" in update_fields
+        if should_analyze:
+            analyzer = BasicPostAnalyzer(self.content)
+            analyzer = ExternalLinkDecorator(analyzer)
+            analyzer = LengthDecorator(analyzer)
+            analyzer = ExplicitLanguageDecorator(analyzer)
+            results = analyzer.analyze()
+            self.has_explicit_langauge = results["has_explicit_language"]
+            self.is_long_read = results["is_long_read"]
+            self.has_external_links = results["has_external_links"]
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):

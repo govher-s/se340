@@ -1,6 +1,10 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import redirect, render
 from django.views.generic import DetailView, ListView, TemplateView
 from django.db.models import Q
 
+from .forms import PostForm
 from .models import Post
 
 
@@ -59,3 +63,28 @@ class PostDetailView(DetailView):
 	context_object_name = "post"
 	slug_field = "slug"
 	slug_url_kwarg = "slug"
+
+
+def register(request):
+	if request.method == "POST":
+		form = UserCreationForm(request.POST)
+		if form.is_valid():
+			form.save()
+			return redirect("login")
+	else:
+		form = UserCreationForm()
+	return render(request, "registration/register.html", {"form": form})
+
+
+@login_required
+def create_post(request):
+	if request.method == "POST":
+		form = PostForm(request.POST, request.FILES)
+		if form.is_valid():
+			post = form.save(commit=False)
+			post.author = request.user
+			post.save()
+			return redirect("core:home")
+	else:
+		form = PostForm()
+	return render(request, "core/create_post.html", {"form": form})
