@@ -8,6 +8,9 @@
     <p class="eyebrow">Travel story</p>
     <h1>{{ post.title }}</h1>
     <p class="detail-meta">By {{ post.author.username }} · {{ post.created_at|date:"j F Y" }}</p>
+    {% if post.image %}
+        <img class="detail-cover" src="{{ post.image.url }}" alt="{{ post.title }}">
+    {% endif %}
     <div class="detail-content">{{ post.content|linebreaks }}</div>
     <div class="badges detail-badges">
         {% if post.has_explicit_langauge %}<span class="badge badge-red">profanity</span>{% endif %}

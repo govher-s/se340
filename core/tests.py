@@ -181,6 +181,12 @@ class PostPageTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(response, self.post.title)
 
+    def test_manual_long_read_flag_survives_post_save(self):
+        self.post.is_long_read = True
+        self.post.save()
+
+        self.assertTrue(Post.objects.get(pk=self.post.pk).is_long_read)
+
     def test_authenticated_user_can_create_post_with_image(self):
         self.client.force_login(self.post.author)
         response = self.client.post(

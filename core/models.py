@@ -40,7 +40,11 @@ class Post(models.Model):
             self.slug = candidate
 
         update_fields = kwargs.get("update_fields")
-        should_analyze = self.pk is None or update_fields is None or "content" in update_fields
+        content_changed = self.pk is None
+        if self.pk is not None and update_fields is None:
+            previous_content = type(self).objects.only("content").get(pk=self.pk).content
+            content_changed = previous_content != self.content
+        should_analyze = content_changed or (update_fields is not None and "content" in update_fields)
         if should_analyze:
             analyzer = BasicPostAnalyzer(self.content)
             analyzer = ExternalLinkDecorator(analyzer)
