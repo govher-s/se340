@@ -1,21 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-</head>
+{% extends "core/base.html" %}
 
-<body>
+{% block title %}Log in | Nomad Postcards{% endblock %}
 
-    <h1>Login</h1>
-
-    <form method="post">
-        {% csrf_token %}
-
-        {{ form.as_p }}
-
-        <button type="submit">Login</button>
-    </form>
-
-</body>
-</html>
+{% block content %}
+<section class="auth-page container">
+    <div class="auth-card">
+        <nav class="auth-tabs" aria-label="Account">
+            <a href="{% url 'login' %}" class="active" aria-current="page">Log in</a>
+            <a href="{% url 'core:register' %}">Sign up</a>
+        </nav>
+        <p class="eyebrow">Welcome back</p>
+        <h1>Log in</h1>
+        <form class="auth-form" method="post">
+            {% csrf_token %}
+            {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+            {{ form.as_p }}
+            <button type="submit">Log in</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

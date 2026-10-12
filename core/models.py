@@ -11,10 +11,17 @@ from .decorators.explicit import ExplicitLanguageDecorator
 
 # Create your models here.
 class Post(models.Model):
+    class Section(models.TextChoices):
+        FOLLOWING = "following", "Following"
+        TRENDING = "trending", "Trending"
+        NEWBIES = "newbies", "Newbies"
+
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=220, unique=True, blank=True)
     content = models.TextField()
     image = models.ImageField(upload_to="post_images/", blank=True, null=True)
+    second_image = models.ImageField(upload_to="post_images/", blank=True, null=True)
+    section = models.CharField(max_length=20, choices=Section.choices, default=Section.FOLLOWING)
 
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,

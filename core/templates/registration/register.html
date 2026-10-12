@@ -1,33 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "core/base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Account</title>
-</head>
+{% block title %}Sign up | Nomad Postcards{% endblock %}
 
-<body>
-
-    <h1>Create an Account</h1>
-
-    <form method="post">
-        {% csrf_token %}
-
-        {{ form.as_p }}
-
-        <button type="submit">Create Account</button>
-    </form>
-
-    <p>
-        Already have an account?
-        <a href="{% url 'login' %}">Login</a>
-    </p>
-
-    <p>
-        <a href="{% url 'home' %}">Back to Home</a>
-    </p>
-
-</body>
-
-</html>
+{% block content %}
+<section class="auth-page container">
+    <div class="auth-card">
+        <nav class="auth-tabs" aria-label="Account">
+            <a href="{% url 'login' %}">Log in</a>
+            <a href="{% url 'core:register' %}" class="active" aria-current="page">Sign up</a>
+        </nav>
+        <p class="eyebrow">Join the club</p>
+        <h1>Sign up</h1>
+        <form class="auth-form" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Create account</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

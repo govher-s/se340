@@ -11,6 +11,9 @@
     {% if post.image %}
         <img class="detail-cover" src="{{ post.image.url }}" alt="{{ post.title }}">
     {% endif %}
+    {% if post.second_image %}
+        <img class="detail-cover" src="{{ post.second_image.url }}" alt="{{ post.title }}">
+    {% endif %}
     <div class="detail-content">{{ post.content|linebreaks }}</div>
     <div class="badges detail-badges">
         {% if post.has_explicit_langauge %}<span class="badge badge-red">profanity</span>{% endif %}

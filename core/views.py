@@ -1,3 +1,4 @@
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import redirect, render
@@ -34,7 +35,10 @@ class HomeView(TemplateView):
 		context = super().get_context_data(**kwargs)
 		query = self.request.GET.get("q", "").strip()
 		excluded_labels = self.request.GET.getlist("exclude")
-		context["posts"] = searched_posts(query, excluded_labels)[:6]
+		posts = searched_posts(query, excluded_labels)
+		context["posts"] = posts.filter(section=Post.Section.FOLLOWING)[:6]
+		context["trending_posts"] = posts.filter(section=Post.Section.TRENDING)[:2]
+		context["newbie_posts"] = posts.filter(section=Post.Section.NEWBIES)[:2]
 		context["search_query"] = query
 		context["excluded_labels"] = excluded_labels
 		return context
@@ -69,8 +73,9 @@ def register(request):
 	if request.method == "POST":
 		form = UserCreationForm(request.POST)
 		if form.is_valid():
-			form.save()
-			return redirect("login")
+			user = form.save()
+			login(request, user)
+			return redirect("core:home")
 	else:
 		form = UserCreationForm()
 	return render(request, "registration/register.html", {"form": form})

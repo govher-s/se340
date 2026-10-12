@@ -1,32 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "core/base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Post</title>
-</head>
+{% block title %}Write a story | Nomad Postcards{% endblock %}
 
-<body>
-
-    <h1>Create a Travel Post</h1>
-
-    <p>
-        Logged in as: {{ user.username }}
-    </p>
-
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-
-        {{ form.as_p }}
-
-        <button type="submit">Publish Post</button>
-    </form>
-
-    <p>
-        <a href="{% url 'core:home' %}">Cancel</a>
-    </p>
-
-</body>
-
-</html>
+{% block content %}
+<section class="auth-page container">
+    <div class="auth-card write-card">
+        <a class="back-link" href="{% url 'core:home' %}">← Back to explore</a>
+        <p class="eyebrow">Posting as @{{ user.username }}</p>
+        <h1>Write a story</h1>
+        <form class="auth-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Publish post</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

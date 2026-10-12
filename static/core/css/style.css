@@ -42,7 +42,7 @@ a:hover { color: var(--burgundy); }
     object-fit: contain;
     width: 40px;
 }
-.site-nav { display: flex; gap: 1.5rem; font-size: .85rem; }
+.site-nav { align-items: center; display: flex; gap: 1.5rem; font-size: .85rem; }
 .hero {
     align-items: center;
     background: var(--green);
@@ -60,7 +60,7 @@ a:hover { color: var(--burgundy); }
 .hero-copy > p:last-child { font-size: 1.1rem; line-height: 1.35; }
 .eyebrow { font-size: .72rem; letter-spacing: .12em; margin: 0; text-transform: uppercase; }
 .hero-postcard { background: #f9f4e9; color: var(--burgundy); padding: .8rem; transform: rotate(6deg); width: 290px; }
-.postcard-image { background: linear-gradient(155deg, #8daaa1, #d1a552 55%, #54776b); height: 145px; }
+.postcard-image { background: #8daaa1 url("../images/hero-polaroid.jpg") center 68% / cover no-repeat; height: 145px; }
 .postcard-note { font-family: Fraunces, serif; padding: .8rem .4rem .2rem; }
 .feed-section { max-width: 1180px; }
 .feed-tools { display: flex; gap: .8rem; margin-bottom: 1.3rem; }
@@ -96,6 +96,30 @@ a:hover { color: var(--burgundy); }
 .badge-red { background: var(--burgundy); }
 .badge-green { background: #315643; }
 .badge-blue { background: #737696; }
+.account-menu { position: relative; }
+.avatar { align-items: center; background: var(--burgundy); border-radius: 50%; color: #fff8e5; cursor: pointer; display: flex; font-weight: 500; height: 2rem; justify-content: center; list-style: none; width: 2rem; }
+.avatar::-webkit-details-marker { display: none; }
+.account-dropdown { background: #fff; border: 1px solid var(--line); border-radius: .25rem; min-width: 150px; padding: .8rem 1rem; position: absolute; right: 0; top: calc(100% + .5rem); z-index: 10; }
+.account-name { color: #716a61; display: block; font-size: .76rem; margin-bottom: .5rem; }
+.account-dropdown form { margin: 0; }
+.account-dropdown button { background: none; border: 0; color: inherit; font: inherit; padding: 0; }
+.account-dropdown button:hover { color: var(--burgundy); }
+.auth-page { display: flex; justify-content: center; padding: 4rem 1.5rem 6rem; }
+.auth-card { background: #fffefa; border: 1px solid var(--line); border-radius: .5rem; max-width: 440px; padding: 2rem; width: 100%; }
+.auth-card h1 { font-family: Fraunces, serif; font-size: 2.6rem; margin: .4rem 0 1.5rem; }
+.auth-form p { margin: 0 0 1rem; }
+.auth-form label { display: block; font-size: .85rem; font-weight: 500; margin-bottom: .3rem; }
+.auth-form input, .auth-form textarea { background: #fff; border: 1px solid var(--line); border-radius: .25rem; padding: .7rem 1rem; width: 100%; }
+.auth-form textarea { line-height: 1.6; min-height: 280px; resize: vertical; }
+.write-card { max-width: 760px; }
+.write-card .back-link { display: inline-block; margin-bottom: 1.2rem; }
+.auth-form .helptext, .auth-form ul { color: #716a61; display: block; font-size: .76rem; margin: .4rem 0 0; }
+.auth-form ul { padding-left: 1.1rem; }
+.auth-form .errorlist { color: var(--burgundy); list-style: none; margin: 0 0 .6rem; padding: 0; }
+.auth-form button { background: var(--gold); border: 1px solid var(--line); border-radius: .25rem; padding: .7rem 1rem; width: 100%; }
+.auth-tabs { border-bottom: 1px solid var(--line); display: flex; margin-bottom: 1.5rem; }
+.auth-tabs a { border-bottom: 2px solid transparent; color: #716a61; flex: 1; margin-bottom: -1px; padding: .6rem 0; text-align: center; }
+.auth-tabs a.active { border-bottom-color: var(--burgundy); color: var(--burgundy); font-weight: 500; }
 .page-heading { max-width: 1180px; padding: 3rem 0 1.5rem; }
 .page-heading h1 { font-size: 3.5rem; }
 .write-banner { align-items: center; background: var(--burgundy); border-radius: .5rem; color: #fff8e5; display: flex; justify-content: space-between; margin-bottom: 2rem; max-width: 1180px; padding: 1rem 2rem; }
