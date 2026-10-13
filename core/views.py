@@ -36,9 +36,11 @@ class HomeView(TemplateView):
 		query = self.request.GET.get("q", "").strip()
 		excluded_labels = self.request.GET.getlist("exclude")
 		posts = searched_posts(query, excluded_labels)
-		context["posts"] = posts.filter(section=Post.Section.FOLLOWING)[:6]
+		following = list(posts.filter(section=Post.Section.FOLLOWING)[:5])
+		context["featured_post"] = following[0] if following else None
+		context["posts"] = following[1:]
 		context["trending_posts"] = posts.filter(section=Post.Section.TRENDING)[:2]
-		context["newbie_posts"] = posts.filter(section=Post.Section.NEWBIES)[:2]
+		context["newbie_posts"] = posts.filter(section=Post.Section.NEWBIES)[:6]
 		context["search_query"] = query
 		context["excluded_labels"] = excluded_labels
 		return context
@@ -88,6 +90,7 @@ def create_post(request):
 		if form.is_valid():
 			post = form.save(commit=False)
 			post.author = request.user
+			post.section = Post.Section.NEWBIES
 			post.save()
 			return redirect("core:home")
 	else:

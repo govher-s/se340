@@ -7,13 +7,13 @@
         {% endif %}
     </a>
     <div class="post-card-body">
-        <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
-        <p class="post-meta">@{{ post.author.username }} <span>{{ post.created_at|date:"j M Y" }}</span></p>
-        <p class="post-excerpt">{{ post.content|truncatewords:24 }}</p>
         <div class="badges">
             {% if post.has_explicit_langauge %}<span class="badge badge-red">profanity</span>{% endif %}
             {% if post.is_long_read %}<span class="badge badge-green">Long</span>{% endif %}
             {% if post.has_external_links %}<span class="badge badge-blue">external links</span>{% endif %}
         </div>
+        <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+        <p class="post-excerpt">{{ post.content|truncatewords:24 }}</p>
+        <p class="post-meta">@{{ post.author.username }} <span>{{ post.created_at|date:"j M Y" }}</span></p>
     </div>
 </article>
