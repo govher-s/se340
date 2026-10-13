@@ -1,0 +1,55 @@
+
+{% extends "core/base.html" %}
+
+{% block title %}My Posts | Nomad Postcards{% endblock %}
+
+{% block content %}
+
+<section class="container py-5">
+
+    <h1>My Posts</h1>
+
+    <p>Posts written by {{ request.user.username }}</p>
+
+    <a href="{% url 'core:home' %}">Back to Home</a>
+
+    <hr>
+
+    {% for post in posts %}
+
+        <article>
+            <h2>{{ post.title }}</h2>
+
+            {% if post.image %}
+                <img src="{{ post.image.url }}" alt="Cover photo for {{ post.title }}" width="300">
+            {% else %}
+                <p>No cover photo uploaded</p>
+            {% endif %}
+
+            <p>Created: {{ post.created_at|date:"j F Y" }}</p>
+
+            <p>{{ post.content|linebreaks }}</p>
+
+            <form method="post" action="{% url 'core:delete_post' post.id %}">
+                {% csrf_token %}
+
+                <button type="submit" class="delete-button" onclick="return confirm('Are you sure you want to delete this post? This cannot be undone.');">Delete
+                </button>
+            </form>
+
+            <hr>
+        </article>
+
+    {% empty %}
+
+        <p>You haven't written any posts yet.</p>
+
+        <a href="{% url 'core:create_post' %}">
+            Write Your First Post
+        </a>
+
+    {% endfor %}
+
+</section>
+
+{% endblock %}

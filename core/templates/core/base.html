@@ -27,6 +27,7 @@
                     <summary class="avatar" aria-label="Account menu for {{ user.username }}">{{ user.username|slice:":1"|upper }}</summary>
                     <div class="account-dropdown">
                         <span class="account-name">@{{ user.username }}</span>
+                        <a href="{% url 'core:my_posts' %}">My Posts</a>
                         <form method="post" action="{% url 'logout' %}">
                             {% csrf_token %}
                             <button type="submit">Log out</button>

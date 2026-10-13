@@ -1,5 +1,6 @@
 import string
 
+from better_profanity import profanity
 from .base import PostAnalyzerDecorator
 
 
@@ -8,19 +9,7 @@ class ExplicitLanguageDecorator(PostAnalyzerDecorator):
     def analyze(self):
         results = super().analyze()
 
-        explicit_words = [
-            "damn",
-            "hell",
-            "shit",
-            "fuck",
-        ]
-
-        words = [
-            word.strip(string.punctuation)
-            for word in self.content.lower().split()
-        ]
-
-        if any(word in explicit_words for word in words):
+        if profanity.contains_profanity(self.content):
             results["has_explicit_language"] = True
 
         return results

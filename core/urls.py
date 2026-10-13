@@ -6,5 +6,7 @@ urlpatterns = [
     path("posts/", views.PostListView.as_view(), name="post_list"),
     path("register/", views.register, name="register"),
     path("posts/create/", views.create_post, name="create_post"),
+    path("posts/mine/", views.my_posts, name="my_posts"),
+    path("posts/<int:post_id>/delete/", views.delete_post, name="delete_post"),
     path("posts/<slug:slug>/", views.PostDetailView.as_view(), name="post_detail"),
 ]

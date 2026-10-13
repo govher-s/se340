@@ -1,9 +1,10 @@
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import DetailView, ListView, TemplateView
 from django.db.models import Q
+from django.views.decorators.http import require_POST
 
 from .forms import PostForm
 from .models import Post
@@ -96,3 +97,28 @@ def create_post(request):
 	else:
 		form = PostForm()
 	return render(request, "core/create_post.html", {"form": form})
+
+@login_required
+def my_posts(request):
+	posts = Post.objects.filter(
+		author = request.user
+	).order_by("-created_at")
+
+	return render(
+		request,
+		"core/my_posts.html",
+		{"posts": posts}
+	)
+
+@login_required
+@require_POST
+def delete_post(request, post_id):
+    post = get_object_or_404(
+        Post,
+        id=post_id,
+        author=request.user
+    )
+
+    post.delete()
+
+    return redirect("core:my_posts")
