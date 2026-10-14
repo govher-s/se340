@@ -7,7 +7,7 @@ class LengthDecorator(PostAnalyzerDecorator):
 
         word_count = len(self.content.split())
 
-        if word_count > 2000:
+        if word_count > 1500:
             results["is_long_read"] = True
 
         return results
